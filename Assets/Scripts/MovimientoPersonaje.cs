@@ -8,11 +8,13 @@ public class MovimientoPersonaje : MonoBehaviour
     private float velocidadCorriendo = 5f;
     private bool estaCorriendo = false;
     private Vector2 fuerzaMovimiento;
+    private Rigidbody2D rb2d;
 
     // Start is called before the first frame update
     void Start()
     {
         fuerzaMovimiento = Vector2.zero;
+        rb2d = GetComponent<Rigidbody2D>();
     }
 
     // Update is called once per frame
@@ -20,25 +22,13 @@ public class MovimientoPersonaje : MonoBehaviour
     {
         float inputX = Input.GetAxisRaw("Horizontal");
 
-        if (estaCorriendo)
-        {
-            fuerzaMovimiento.x = inputX * velocidadCorriendo * Time.deltaTime; 
-        }
-        else
-        {
-            fuerzaMovimiento.x = inputX * velocidadCaminando * Time.deltaTime; 
-        }
+        estaCorriendo = Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift);
 
-        GetComponent<Rigidbody2D>().AddForce(fuerzaMovimiento);
+        float velocidadActual = estaCorriendo ? velocidadCorriendo : velocidadCaminando;
 
-        if (Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift))
-        {
-            estaCorriendo = true;
-        }
-        else
-        {
-            estaCorriendo = false;
-        }
+        fuerzaMovimiento.x = inputX * velocidadActual;
+
+        rb2d.AddForce(new Vector2(fuerzaMovimiento.x, 0f));
     }
 }
 
